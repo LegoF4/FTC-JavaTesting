@@ -34,11 +34,12 @@ public class LoadImageApplet extends Applet {
     	 this.resize(this.getWidth()*7, this.getHeight()*3);
     	 System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
          try {
-        	 URL url = new URL(getCodeBase(), "fieldI/field1.jpg");
+        	 URL url = new URL(getCodeBase(), "fieldI/field7.jpg");
              img = ImageIO.read(url);
              Mat image = ImageTransforms.BufferedImage2Mat(img);
              
-             Imgproc.resize(image, image, new Size(960, 540)); //High Res
+             //Imgproc.resize(image, image, new Size(960, 540)); //High Res
+             Imgproc.resize(image, image, new Size(900, 900)); //High Res
         	 long startTime = System.currentTimeMillis();
              Mat rgbImage = image.clone();
              Mat filtered = new Mat();
@@ -53,7 +54,7 @@ public class LoadImageApplet extends Applet {
  			 Core.split(image, channels);
  			 
              Mat circles = new Mat();
-             Imgproc.HoughCircles(channels.get(0), circles, Imgproc.CV_HOUGH_GRADIENT, 1.8, 60);
+             Imgproc.HoughCircles(channels.get(0), circles, Imgproc.CV_HOUGH_GRADIENT, 1.7, 60);
              System.out.println(circles.dump());
              for (int i = 0; i < circles.width(); i++) {
             	 double[] circle = circles.get(0, i);

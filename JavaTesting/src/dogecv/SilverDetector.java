@@ -12,14 +12,17 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 public class SilverDetector {
+
+	static {
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+	}
 	
 	private List<Circle> circlesL;
 	
-	public double sensitivity = 1.5;
+	public double sensitivity = 1.9;
 	public double minDist = 60;
 	
 	private Mat workingMat = new Mat();
-	private Mat displayMat = new Mat();
 	
 	public SilverDetector() {
 		
@@ -27,8 +30,7 @@ public class SilverDetector {
 	
 	public void analyzeImage(Mat input) {
 		workingMat = input.clone();
-		Imgproc.resize(workingMat, workingMat, new Size(960, 540)); //High Res
-        displayMat = workingMat.clone();
+		//Imgproc.resize(workingMat, workingMat, new Size(900, (900*(workingMat.size().height/workingMat.size().width)))); //High Res
         Mat filtered = new Mat();
         Imgproc.bilateralFilter(workingMat, filtered, 5, 175, 175);
         workingMat = filtered.clone();
@@ -42,20 +44,16 @@ public class SilverDetector {
         Mat circlesM = new Mat();
         circlesL = new ArrayList<Circle>();
         
-        Imgproc.HoughCircles(channels.get(0), circlesM, Imgproc.CV_HOUGH_GRADIENT, 1.3, 60);
+        Imgproc.HoughCircles(channels.get(0), circlesM, Imgproc.CV_HOUGH_GRADIENT, sensitivity, minDist);
         System.out.println(circlesM.dump());
         for (int i = 0; i < circlesM.width(); i++) {
        	 double[] circle = circlesM.get(0, i);
        	 circlesL.add(new Circle(circle[0], circle[1], circle[2]));
-       	 Imgproc.circle(displayMat, new Point(circle[0], circle[1]), (int) circle[2], new Scalar(200, 50, 40), 5);
         }
 	}
 	
-	public Mat getDisplayMat() {
-		return displayMat;
-	}
-	
-	public List<Circle> getCircles() {
+	public synchronized List<Circle> getCircles() {
 		return circlesL;
 	}
+	
 }

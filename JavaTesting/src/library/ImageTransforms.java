@@ -8,10 +8,15 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 
 public class ImageTransforms {
 	
@@ -37,6 +42,20 @@ public class ImageTransforms {
     	AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
     	after = scaleOp.filter(img, after);
     	return after;
+    }
+    /**
+     * Assumes square input.
+     * @param mat
+     * @param maxSize
+     * @return
+     */
+    public static Mat resizeToMax(Mat mat, Size maxSize) {
+    	Size newSize = mat.width() > mat.height() ? new Size((int) (maxSize.width), (int) (mat.height()*maxSize.width/mat.width())) : new Size((int) (mat.width()*maxSize.height/mat.height()), (int) (maxSize.height));
+    	Imgproc.resize(mat, mat, newSize);
+    	Mat newMat = Mat.zeros(maxSize, CvType.CV_8UC3);
+    	Core.copyMakeBorder(mat, newMat, 0, (int) (maxSize.height - newSize.height), 0, (int) (maxSize.width-newSize.width), Core.BORDER_CONSTANT, new Scalar(0,0,0));
+    	mat.release();
+    	return newMat;
     }
 
 }
