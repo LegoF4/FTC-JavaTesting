@@ -18,6 +18,14 @@ public class MathFTC {
 	}
 	
 	/**
+	 * Returns whether a double is in a specified range
+	 */
+	public static boolean inRange(double value, double min, double max) {
+		if(value >= min && value <= max) return true;
+		return false;
+	}
+	
+	/**
 	 * A recursive function which return a list of lists, where each list is a combination of length k.
 	 * @param list The input list to be chosen from
 	 * @param k The sample size

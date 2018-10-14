@@ -12,7 +12,7 @@ import org.opencv.imgproc.Imgproc;
 
 public class GoldDetector {
 
-    private Mat maskYellow = new Mat(); // Yellow Mask returned by color filter
+    public Mat maskYellow = new Mat(); // Yellow Mask returned by color filter
     private Mat hierarchy  = new Mat();
     
     private DogeCVColorFilter yellowFilter = new LeviColorFilter(LeviColorFilter.ColorPreset.YELLOW);
@@ -24,9 +24,6 @@ public class GoldDetector {
 	}
 	
 	private List<Rect> cubesR;
-	
-	public double sensitivity = 1.9;
-	public double minDist = 60;
 	
 	private Mat workingMat = new Mat();
 	

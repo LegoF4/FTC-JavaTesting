@@ -34,36 +34,16 @@ public class LoadImageApplet extends Applet {
     	 this.resize(this.getWidth()*7, this.getHeight()*3);
     	 System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
          try {
-        	 URL url = new URL(getCodeBase(), "fieldI/field7.jpg");
+        	 URL url = new URL(getCodeBase(), "fieldI/field3.jpg");
              img = ImageIO.read(url);
              Mat image = ImageTransforms.BufferedImage2Mat(img);
+             long startTime = System.currentTimeMillis();
+             Imgproc.cvtColor(image, image, Imgproc.COLOR_BGR2RGB);
+             Mat yellowMask = new Mat();
+             (new LeviColorFilter(LeviColorFilter.ColorPreset.YELLOW)).process(image, yellowMask);
              
-             //Imgproc.resize(image, image, new Size(960, 540)); //High Res
-             Imgproc.resize(image, image, new Size(900, 900)); //High Res
-        	 long startTime = System.currentTimeMillis();
-             Mat rgbImage = image.clone();
-             Mat filtered = new Mat();
-             System.out.println(image.type());
-             Imgproc.bilateralFilter(image, filtered, 5, 175, 175);
-             image = filtered.clone();
-             Imgproc.cvtColor(image, image, Imgproc.COLOR_BGR2Lab);
-             
-             Imgproc.erode(image, image, Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, new Size(3,3)));
-             Imgproc.GaussianBlur(image, image, new Size(3,3), 0);
-             List<Mat> channels = new ArrayList<Mat>();
- 			 Core.split(image, channels);
- 			 
-             Mat circles = new Mat();
-             Imgproc.HoughCircles(channels.get(0), circles, Imgproc.CV_HOUGH_GRADIENT, 1.7, 60);
-             System.out.println(circles.dump());
-             for (int i = 0; i < circles.width(); i++) {
-            	 double[] circle = circles.get(0, i);
-            	 Rect rect = new Rect((int) (circle[0]-0.7*circle[2]),(int) (circle[1]-0.7*circle[2]), (int) (1.4*circle[2]), (int) (1.4*circle[2]));
-            	 Imgproc.rectangle(rgbImage, rect.tl(), rect.br(), new Scalar(50, 200, 30));
-            	 Imgproc.circle(rgbImage, new Point(circle[0], circle[1]), (int) circle[2], new Scalar(200, 50, 40), 5);
-             }
              System.out.println("Elapsed Time: " + Double.toString(0.001*(System.currentTimeMillis() - startTime)));
-             img = ImageTransforms.Mat2BufferedImage(rgbImage);
+             img = ImageTransforms.Mat2BufferedImage(yellowMask);
              img = ImageTransforms.resize(img, 1);
              
         	//URL url = new URL(getCodeBase(), "glyphs/major_sides/glyph.jpg");

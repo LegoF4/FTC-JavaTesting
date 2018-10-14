@@ -72,7 +72,6 @@ public class DataAnnotater {
 			return;
 		}
 		BufferedImage loadedImage = ImageIO.read(images[0]);
-		System.out.println("Height: " + Double.toString(loadedImage.getHeight()));
     	workingMat = ImageTransforms.BufferedImage2Mat(loadedImage);
     	workingMat = ImageTransforms.resizeToMax(workingMat, size);
     	displayMat = workingMat.clone();
@@ -86,12 +85,12 @@ public class DataAnnotater {
 		JPanel inputPanel = new JPanel();
 		inputPanel.setLayout(new GridLayout(2,2));
 		
-		JLabel inputTitle = new JLabel("Test of Image Display: ");
+		JLabel inputTitle = new JLabel("Adjustable Parameters: ");
 		inputTitle.setFont(fontL);
 		
-		JLabel sensitivityLabel = new JLabel("Sensitivity: ");
+		JLabel sensitivityLabel = new JLabel("Silver Sensitivity: ");
 		sensitivityLabel.setFont(fontS);
-		JLabel minDistLabel = new JLabel("Min Dist: ");
+		JLabel minDistLabel = new JLabel("Silver Min Dist: ");
 		minDistLabel.setFont(fontS);
 		inputPanel.add(sensitivityLabel);
 		inputPanel.add(sensitivityField);
@@ -173,6 +172,7 @@ public class DataAnnotater {
 		f.getContentPane().add(organizer, "Center");
 		f.add(organizer);
 		f.setVisible(true);
+		updateImage();
 	}
 	
 	public static void nextImage() throws IOException {
@@ -208,10 +208,13 @@ public class DataAnnotater {
 		circles = detectorSilver.getCircles();
 		detectorGold.analyzeImage(workingMat);
 		rects = detectorGold.getCubes();
-		System.out.println(rects.size());
 		for (Circle circle : circles) { 
 	       	 Imgproc.circle(displayMat, new Point(circle.x, circle.y), (int) circle.radius, new Scalar(200, 50, 40), 5);
 		}
+		for (Rect rect : rects) {
+			Imgproc.rectangle(displayMat, rect.tl(), rect.br(), new Scalar(40,40,255),2); // Draw rect
+		}
+		//displayMat = detectorGold.maskYellow;
 		imageLabel.setIcon(new ImageIcon(ImageTransforms.Mat2BufferedImage(displayMat)));
 	}
 	

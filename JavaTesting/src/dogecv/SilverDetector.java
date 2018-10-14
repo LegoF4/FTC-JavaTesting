@@ -45,7 +45,6 @@ public class SilverDetector {
         circlesL = new ArrayList<Circle>();
         
         Imgproc.HoughCircles(channels.get(0), circlesM, Imgproc.CV_HOUGH_GRADIENT, sensitivity, minDist);
-        System.out.println(circlesM.dump());
         for (int i = 0; i < circlesM.width(); i++) {
        	 double[] circle = circlesM.get(0, i);
        	 circlesL.add(new Circle(circle[0], circle[1], circle[2]));
